@@ -1,9 +1,11 @@
+#This test suite functions as a part of the project unit tests.
 
 from django.test import TestCase
 from django.core.urlresolvers import resolve
 from lists.views import home_page
 from django.http import HttpResponse, HttpRequest
 from django.template.loader import render_to_string
+
 
 class HomePageTest(TestCase):
 
