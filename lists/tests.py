@@ -5,6 +5,7 @@ from django.core.urlresolvers import resolve
 from lists.views import home_page
 from django.http import HttpResponse, HttpRequest
 from django.template.loader import render_to_string
+from lists.models import Item
 
 
 class HomePageTest(TestCase):
@@ -28,6 +29,33 @@ class HomePageTest(TestCase):
 
 		self.assertIn('A new item in the list', response.content.decode())
 		expected_html =render_to_string('home.html', {'new_item_text':'A new item in the list'})
+
+
+class ItemModelTest(TestCase):
+
+	def test_save_retrieve_items(self):
+		#make one item
+		first = Item()
+		first.text = 'first item'
+		first.save()
+
+		#make a second item
+		second = Item()
+		second.text = 'second item'
+		second.save()
+
+		#get all of the items
+		all_items = Item.objects.all()
+		self.assertEqual(all_items.count(), 2)
+
+		#retrieve first and second items
+		first_item = all_items[0]
+		second_item = all_items[1]
+		self.assertEqual(first_item.text, 'first item')
+		self.assertEqual(second_item.text, 'second item')
+
+
+
 
 
 
