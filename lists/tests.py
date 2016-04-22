@@ -31,14 +31,14 @@ class HomePageTest(TestCase):
 		new_item = Item.objects.first()
 		self.assertEqual(new_item.text, 'A new item in the list')
 
-		self.assertIn('A new item in the list', response.content.decode())
-		the_expected_html = render_to_string('home.html', {'new_item_text':'A new item in the list'})
-		self.assertEqual(response.content.decode(), the_expected_html)
+		self.assertEqual(response.status_code, 302)
+		self.assertEqual(response['location'], '/')
 
 	def test_home_page_saves_items_only_when_necessary(self):
 		request = HttpRequest()
 		home_page(request)
 		self.assertEqual(Item.objects.count(), 0)
+
 
 class ItemModelTest(TestCase):
 
