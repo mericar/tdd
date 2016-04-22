@@ -39,6 +39,15 @@ class HomePageTest(TestCase):
 		home_page(request)
 		self.assertEqual(Item.objects.count(), 0)
 
+	def test_home_page_displays_all_list_items(self):
+		Item.objects.create(text='thing 1')
+		Item.objects.create(text='thing 2')
+
+		request = HttpRequest()
+		response = home_page(request)
+
+		self.assertIn('thing 1', response.content.decode())
+		self.assertIn('thing 2', response.content.decode())
 
 class ItemModelTest(TestCase):
 

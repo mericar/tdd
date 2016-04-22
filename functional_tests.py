@@ -7,7 +7,7 @@ class NewVisitorTest(unittest.TestCase):
 
 	def setUp(self):
 		self.browser = webdriver.Firefox()
-		self.browser.implicitly_wait(3)
+		self.browser.implicitly_wait(5)
 
 	def tearDown(self):
 		self.browser.quit()
@@ -23,7 +23,6 @@ class NewVisitorTest(unittest.TestCase):
 		self.browser.get('http://localhost:8000')
 
 		# She notices the page title and header mention to-do lists
-		self.assertIn('To-Do', self.browser.title)
 		header_text = self.browser.find_element_by_tag_name('h1').text
 		self.assertIn('To-Do', header_text)
 		# She is invited to enter a to-do item straight away
