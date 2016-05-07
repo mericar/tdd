@@ -5,7 +5,7 @@ from django.core.urlresolvers import resolve
 from lists.views import home_page
 from django.http import HttpResponse, HttpRequest
 from django.template.loader import render_to_string
-from lists.models import Item
+from lists.models import Item, List
 
 
 class HomePageTest(TestCase):
@@ -19,20 +19,28 @@ class HomePageTest(TestCase):
 		response = home_page(request)
 		expected_html = render_to_string('home.html')
 		self.assertEqual(response.content.decode(), expected_html)
-		
 
-class ItemModelTest(TestCase):
 
-	def test_save_retrieve_items(self):
+class ListAndItemModelsTest(TestCase):
+
+	def test_saving_retrieving_items(self):
+		list_ = List()
+		list_.save()
+
 		#make one item
 		first = Item()
 		first.text = 'first item'
+		first.list = list_
 		first.save()
 
 		#make a second item
 		second = Item()
 		second.text = 'second item'
+		second.list = list_
 		second.save()
+
+		saved_list = List.objects.first()
+		self.assertEquals(saved_list, list_)
 
 		#get all of the items
 		all_items = Item.objects.all()
@@ -42,7 +50,9 @@ class ItemModelTest(TestCase):
 		first_item = all_items[0]
 		second_item = all_items[1]
 		self.assertEqual(first_item.text, 'first item')
+		self.assertEqual(first_item.list, list_)
 		self.assertEqual(second_item.text, 'second item')
+		self.assertEqual(first_item.list, list_)
 
 class ListViewTest(TestCase):
 
@@ -51,8 +61,9 @@ class ListViewTest(TestCase):
 		self.assertTemplateUsed(response, 'list.html')
 
 	def test_displays_all_items(self):
-		Item.objects.create(text='itemey 1')
-		Item.objects.create(text='itemey 2')
+		list_=List.objects.create()
+		Item.objects.create(text='itemey 1', list=list_)
+		Item.objects.create(text='itemey 2', list=list_)
 		response = self.client.get('/lists/the-only-list-in-the-world/')
 		self.assertContains(response, 'itemey 1') 
 		self.assertContains(response, 'itemey 2') 
